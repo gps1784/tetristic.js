@@ -1,12 +1,16 @@
-DEFAULT_STARTING_POS = {x: 5, y: 1};
+const DEFAULT_STARTING_POS = {x: 5, y: 1};
 
 class Tetromino {
   constructor(name, cellArray, color='rgb(100, 100, 50)', startingPos=DEFAULT_STARTING_POS) {
     this.name      = name;
-    this.origin    = startingPos;
+    this.origin    = Object.assign({}, startingPos);
     this.cellArray = cellArray;
     this.color     = color;
   } // constructor()
+
+  clone() {
+    return new Tetromino(this.name, this.cellArray, this.color, this.origin);
+  } // clone()
 
   getCells(x=this.origin.x, y=this.origin.y) {
     let _cells = [];
@@ -43,6 +47,16 @@ class Tetromino {
     this.origin.y += dy;
   } // translate()
 
+  testForLatch(board) {
+    for (let _cell of this.getCells()) {
+      // if the cell below us is occupied
+      if ((_cell.y === 19) || board.cells[_cell.y + 1][_cell.x] !== null) {
+        return true;
+      }
+    }
+    return false;
+  } // testForLatch()
+
   rotateCW(board) {
     let _rotatedCells = [];
     for (let _cell of this.cellArray) {
@@ -78,6 +92,19 @@ class Tetromino {
     } // for _cell of this.cellArray
     this.cellArray = _rotatedCells;
   } // rotateCCW()
+
+  decompose(board) {
+    for (let _cell of this.getCells()) {
+      board.cells[_cell.y][_cell.x] = new Tetromino(
+        this.name,
+        [
+          {x: 0, y: 0},
+        ],
+        this.color,
+        {x: _cell.x, y: _cell.y}
+      );
+    }
+  } // decompose()
 } // class Tetromino
 
 Tetromino.shape = {
@@ -167,7 +194,7 @@ Tetromino.shape = {
     if (lastTetromino.name === _arr[_rand].name) {
       _rand = Math.floor(Math.random() * 7);
     }
-    return _arr[_rand];
+    return _arr[_rand].clone();
   },
 };
 

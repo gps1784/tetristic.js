@@ -37,10 +37,7 @@ class Board {
       for (let _col = xLow; _col < xHigh; _col++) {
         let _cell = this.cells[_row][_col];
         if (_cell !== null) {
-          let _y = _row * scale;
-          let _x = _col * scale;
-          this.content.fillStyle = _cell.color;
-          this.context.fillRect( _x+1, _y+1, scale-2, scale-2 );
+          _cell.render(this);
         }
       } // for _col
     } // for _row
@@ -96,6 +93,11 @@ class Board {
   } // onKeyDown()
 
   update() {
+    // has this tetromino come to rest?
+    if (this.activeTetromino.testForLatch(this)) {
+      this.activeTetromino.decompose(this);
+      this.activeTetromino = null;
+    }
     // refill the next tetromino, if needed
     if (this.activeTetromino === null) {
       console.log('getting next tetromino: ' + this.nextTetromino.name);
