@@ -61,36 +61,33 @@ class Board {
   } // play()
 
   onKeyDown(event) {
-    console.log(`Pressed key: ${event.key}`);
     switch (event.key) {
       case 'q': // CCW
         this.activeTetromino.rotateCCW(this);
-        this.update();
       break;
       case 'e': // CW
         this.activeTetromino.rotateCW(this);
-        this.update();
       break;
       case 'a':
       case 'ArrowLeft': // left
         this.activeTetromino.translate(this, -1,  0); // dx, dy
-        this.update();
       break;
       case 'w':
       case 'ArrowUp': // up
-        this.activeTetromino.translate(this,  0, -1); // dx, dy
-        this.update();
+        while (!this.activeTetromino.testForLatch(this)) {
+          this.activeTetromino.translate(this,  0, 1); // dx, dy
+        }
       break;
       case 'd':
       case 'ArrowRight': // right
         this.activeTetromino.translate(this,  1,  0); // dx, dy
-        this.update();
       break;
       case 's':
       case 'ArrowDown': // down
         this.activeTetromino.translate(this,  0,  1); // dx, dy
-        this.update();
       break;
+      default:
+        console.log(`Pressed key: ${event.key}`);
     }
   } // onKeyDown()
 
@@ -102,13 +99,13 @@ class Board {
     }
     // refill the next tetromino, if needed
     if (this.activeTetromino === null) {
-      console.log('getting next tetromino: ' + this.nextTetromino.name);
       this.activeTetromino = this.nextTetromino;
       this.nextTetromino   = Tetromino.shape.getRandom();
     }
     this.renderBackground();
     this.renderForeground();
     this.renderNext();
+    requestAnimationFrame(this.update.bind(this));
   } // update()
 } // class Board
 

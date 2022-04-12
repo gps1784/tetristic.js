@@ -57,6 +57,20 @@ class Network {
       this.biases = biases;
     }
 
+    this.values = new Array();
+    // input layer first
+    this.values.push( new Array() );
+    for (let _input = 0; _input < Heuristic.list.length; _input++) {
+      this.values[0].push(0); // value defaults to 0
+    } // for _input
+    // hidden/output layers
+    for (let _layer = 0; _layer < this.depth; _layer++) {
+      this.values.push( new Array() );
+      for (let _node = 0; _node < this.widths[_layer]; _node++) {
+        this.values[_layer+1].push(0); // value defaults to 0
+      } // for _node
+    } // for _layer
+
     // how wide are the graphics for the neural network allowed to be?
     this.widthScale = Math.floor(
       // canvas width divided by the largest of either
@@ -68,8 +82,26 @@ class Network {
       // the input and output layers will always be visible, plus any hidden layers
       this.context.canvas.height / (this.depth + 1)
     );
-    console.log(this);
   } // generate()
+
+  calculateNetwork(board) {
+    for (let _input = 0; _input < Heuristic.list.length; _input++) {
+      this.values[0][_input] = Heuristic.list[_input](board);
+    } // for _input
+    for (let _layer = 0; _layer < this.depth; _layer++) {
+      for (let _node = 0; _node < this.widths[_layer]; _node++) {
+        let _sum = 0;
+        for (let _link = 0; _link < this.weights[_layer][_node].length; _link++) {
+          // this.values[_layer] is a bit of a trick...
+          // since ONLY values includes the input layer,
+          // we are reading the layer BEFORE the active layer
+          _sum += this.values[_layer][_link] * this.weights[_layer][_node][_link];
+        } // for _link
+        _sum += this.biases[_layer][_node];
+        this.values[_layer+1][_node] = Heuristic.sigmoid(_sum);
+      } // for _node
+    } // for _layer
+  } // calculateNetwork()
 
   render() {
     this.renderLinks();
@@ -77,31 +109,37 @@ class Network {
   } // render()
 
   renderNodes() {
-    let scale = Math.min(this.widthScale, this.heightScale);
-    let offset = Math.floor(scale / 2);
     // the inputs
     for (let _input = 0; _input < Heuristic.list.length; _input++) {
-      let _x = (_input * scale) + offset / 2;
-      let _y = offset / 2;
-      this.context.lineWidth   = 2;
-      this.context.fillStyle   = 'rgb(255, 255, 255)';
-      this.context.fillRect(_x+1, _y+1, scale/2 - 2, scale/2 - 2);
-      this.context.strokeStyle = 'rgb(0, 0, 0)';
-      this.context.strokeRect(_x, _y, scale/2, scale/2);
+      this.renderNode(0, _input);
     } // for _input
     // the hidden/output layers
     for (let _layer = 0; _layer < this.depth; _layer++) {
       for (let _node = 0; _node < this.widths[_layer]; _node++) {
-        let _x = (_node * scale) + offset / 2;
-        let _y = ((_layer+1) * scale) + offset / 2;
-        this.context.lineWidth   = 2;
-        this.context.fillStyle   = 'rgb(255, 255, 255)';
-        this.context.fillRect(_x+1, _y+1, scale/2 - 2, scale/2 - 2);
-        this.context.strokeStyle = 'rgb(0, 0, 0)';
-        this.context.strokeRect(_x, _y, scale/2, scale/2);
+        this.renderNode(_layer+1, _node);
       } // for _node
     } // for _layer
   } // renderNodes()
+
+  renderNode(layer, node) {
+    // precalculate some scaling options
+    let scale  = Math.min(this.widthScale, this.heightScale);
+    let offset = Math.floor(scale / 4);
+    let x     = (node * scale) + offset;
+    let y     = (layer * scale) + offset;
+    // setup the canvas as we like it
+    this.context.font         = '14px monospace';
+    this.context.lineWidth    = 2;
+    this.context.textAlign    = 'right';
+    this.context.textBaseline = 'top';
+    this.context.fillStyle    = 'rgb(255, 255, 255)';
+    this.context.strokeStyle  = 'rgb(0, 0, 0)';
+    // draw the rectangle, then the text on top
+    this.context.fillRect(x, y, offset*2, offset*2);
+    this.context.strokeRect(x, y, offset*2, offset*2);
+    this.context.fillStyle = this.calcColorRedBlackGreen(this.values[layer][node]);
+    this.context.fillText(this.values[layer][node].toFixed(3), x + offset*2, y);
+  } // renderNode()
 
   renderLinks() {
     let scale = Math.min(this.widthScale, this.heightScale);
@@ -111,7 +149,6 @@ class Network {
         let _start = {x: _node * scale, y: (_layer + 1) * scale};
         for (let _link = 0; _link < this.weights[_layer][_node].length; _link++) {
           let _end = {x: _link * scale, y: _layer * scale};
-          console.log(`line: ${_start.x},${_start.y} <=> ${_end.x},${_end.y} ${this.calcColorRedBlackGreen(this.weights[_layer][_node][_link])}`);
           this.context.lineWidth   = 5;
           this.context.strokeStyle = this.calcColorRedBlackGreen(this.weights[_layer][_node][_link]);
           this.context.beginPath();
@@ -142,7 +179,11 @@ class Network {
 
   calcColorRedWhiteGreen() {} // calcColorRedWhiteGreen()
 
-  play(board) {} // play()
+  play(board) {
+    this.calculateNetwork(board);
+    this.render();
+    requestAnimationFrame(this.play.bind(this, board));
+  } // play()
 } // class Network
 
 Network.heuristic = Heuristic;

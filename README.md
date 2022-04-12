@@ -13,19 +13,25 @@ A heuristic-driven Tetris-playing neural network (that runs in your browser!)
 
 ## Heuristics
 A list of heuristics that are already implemented for playing Tetris:
-1. (None)
+1. Maximum Column Height (No citation)
+2. Sum of Columns' Height [(1)](#ci)
 
 A list of heuristics not yet added to the system:
-1. Sum of Columns' Height [(1)](#citations)
-2. Count of Holes [(1)](#citations)
-3. Count of Columns with Holes [(1)](#citations)
-4. Bumpiness [(1)](#citations)
-5. Sum of Rows' Transitions [(1)](#citations)
-6. Sum of Columns' Transitions [(1)](#citations)
-7. Count of Pits [(1)](#citations)
-8. Deepest Well [(1)](#citations)
-9. Biggest Well (My Heuristic)
-10. Lines Cleared [(1)](#citations)
+1. Count of Holes [(1)](#citations)
+2. Count of Columns with Holes [(1)](#citations)
+3. Bumpiness [(1)](#citations)
+4. Sum of Rows' Transitions [(1)](#citations)
+5. Sum of Columns' Transitions [(1)](#citations)
+6. Count of Pits [(1)](#citations)
+7. Deepest Well [(1)](#citations)
+8. Biggest Well (My Heuristic)
+9. Lines Cleared [(1)](#citations)
+
+## To-Do
+- The NN needs a way to identify legal moves in order to plan places where the tetromino can be placed.
+- The NN could use the "NEXT" tetromino to plan ahead, much as you or I could (although this would take exponentially longer than placing one piece)
+- The board needs a fail state
+- The NN needs a meta-manager, to keep track of when it fails, recording data about successes, breeding NNs, etc.
 
 ## Citations
 (1) [Duc Anh Bui's "Beating the world record in Tetris (GB) with genetics algorithm"](https://towardsdatascience.com/beating-the-world-record-in-tetris-gb-with-genetics-algorithm-6c0b2f5ace9b)
