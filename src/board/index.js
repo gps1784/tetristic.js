@@ -2,6 +2,8 @@ const Tetromino = require('../tetromino/index.js');
 
 class Board {
   constructor(canvasObj, scale=20) {
+    this.rowCount = 20;
+    this.colCount = 10;
     this.context = canvasObj.getContext('2d');
     this.scale   = scale;
     // generate an empty board of cells
