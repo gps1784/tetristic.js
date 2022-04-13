@@ -41,10 +41,13 @@ class Tetromino {
         return false;
       } else if ((_cell.y + dy >= 20) || (_cell.y + dy < 0)) {
         return false;
+      } else if (board.cells[_cell.y + dy][_cell.x + dx] !== null) {
+        return false;
       }
     }
     this.origin.x += dx;
     this.origin.y += dy;
+    return true;
   } // translate()
 
   testForLatch(board) {
@@ -66,6 +69,8 @@ class Tetromino {
         return false; // outside the bounds
       } else if ((_y >= 20) || (_y < 0)) {
         return false; // outside the bounds
+      } else if (board.cells[_y][_x] !== null) {
+        return false; // cell already occupied
       } else {
         _rotatedCells.push(
           {x: _cell.y * -1, y: _cell.x}
@@ -73,6 +78,7 @@ class Tetromino {
       } // if valid
     } // for _cell of this.cellArray
     this.cellArray = _rotatedCells;
+    return true;
   } // rotateCW()
 
   rotateCCW(board) {
@@ -84,6 +90,8 @@ class Tetromino {
         return false; // outside the bounds
       } else if ((_y >= 20) || (_y < 0)) {
         return false; // outside the bounds
+      } else if (board.cells[_y][_x] !== null) {
+        return false; // cell already occupied
       } else {
         _rotatedCells.push(
           {x: _cell.y, y: _cell.x * -1}
@@ -91,6 +99,7 @@ class Tetromino {
       } // if valid
     } // for _cell of this.cellArray
     this.cellArray = _rotatedCells;
+    return true;
   } // rotateCCW()
 
   decompose(board) {

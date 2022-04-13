@@ -28,7 +28,7 @@ A list of heuristics not yet added to the system:
 9. Lines Cleared [(1)](#citations)
 
 ## To-Do
-- The NN needs a way to identify legal moves in order to plan places where the tetromino can be placed.
+- The move planner (board/placement.js) is extremely slow on the first few pieces, presumably because the board is empty. This can take several seconds per route, often up to 5 seconds on my PC.
 - The NN could use the "NEXT" tetromino to plan ahead, much as you or I could (although this would take exponentially longer than placing one piece)
 - The board needs a fail state
 - The NN needs a meta-manager, to keep track of when it fails, recording data about successes, breeding NNs, etc.

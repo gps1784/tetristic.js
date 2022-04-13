@@ -1,4 +1,5 @@
 const Heuristic = require('../heuristic/index.js');
+const Board = require('../board/index.js');
 
 class Network {
   constructor(canvasObj=null, depth=null, widths=null, weights=null, biases=null) {
@@ -6,6 +7,10 @@ class Network {
     this.generate(depth, widths, weights, biases);
     this.render();
   } // constructor()
+
+  clone() {
+    new Network(this.context.canvas, this.depth, this.widths, this.weights, this.biases);
+  } // clone()
 
   generate(depth, widths, weights, biases) {
     if (depth === null) {
@@ -180,9 +185,11 @@ class Network {
   calcColorRedWhiteGreen() {} // calcColorRedWhiteGreen()
 
   play(board) {
+    board.update();
+    let placement = new Board.Placement(board, this);
+    placement.findBest();
     this.calculateNetwork(board);
     this.render();
-    requestAnimationFrame(this.play.bind(this, board));
   } // play()
 } // class Network
 
