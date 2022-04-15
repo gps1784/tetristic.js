@@ -2,7 +2,6 @@
  *
  */
 
-const Placement = require('./board/placement.js');
 const Tetromino = require('./tetromino.js');
 
 class Board {
@@ -255,7 +254,5 @@ class Board {
     return false;
   } // Board#gameOver()
 } // class Board
-
-Board.Placement = Placement;
 
 module.exports = Board;

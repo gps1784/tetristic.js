@@ -26,7 +26,7 @@ const Heuristic = {
     // start at the bottom, counting upward
     // this will keep track of the highest populated row,
     // where 0 is the ceiling and 20 is empty
-    //board.active.decompose();
+    board.active.decompose();
     let retval = 0;
     for (let row = 0; row < board.height; row++) {
       for (let col = 0; col < board.width; col++) {
@@ -46,7 +46,7 @@ const Heuristic = {
     // start at the bottom, counting upward
     // this will keep track of the highest populated row,
     // where 0 is the ceiling and 20 is empty
-    //board.active.decompose();
+    board.active.decompose();
     let retval = 0;
     for (let col = 0; col < board.width; col++) {
       retval += Heuristic.getHeightOfCol(board, col);
@@ -84,6 +84,6 @@ const Heuristic = {
 Heuristic.list.push( Heuristic.maxHeight );
 //Heuristic.list.push( Heuristic.sumOfHeight );
 Heuristic.list.push( Heuristic.bumpiness );
-//Heuristic.list.push( Heuristic.newLinesCleared );
+Heuristic.list.push( Heuristic.newLinesCleared );
 
 module.exports = Heuristic;

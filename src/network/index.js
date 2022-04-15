@@ -188,7 +188,6 @@ class Network {
   play(board) {
     board.update();
     new Placement(board, this).explore().animate();
-    this.calculateNetwork(board);
     this.render();
   } // play()
 } // class Network

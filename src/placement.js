@@ -31,9 +31,10 @@ class Placement {
       this.board.active = null;
       this.board.update();
       if (this.board.gameOver()) {
-        console.log(this.network);
+        console.log(this.neuralnet);
         console.log('HALTING')
       } else {
+        this.neuralnet.calculateNetwork(this.board);
         requestAnimationFrame(this.neuralnet.play.bind(this.neuralnet, this.board));
       } // if this.board.gameOver()
     } // if moves.length > 0
