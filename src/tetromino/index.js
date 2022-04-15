@@ -71,7 +71,6 @@ class Tetromino {
     for (let cell of this.cells()) {
       let x = cell.x + dx; // column
       let y = cell.y + dy; // row
-      //console.debug(this, cell, x, y, this.isValidCell(x,y));
       if (this.isValidCell(x, y) === false) {
         return false;
       } // if this.isValidCell()

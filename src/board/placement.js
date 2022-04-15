@@ -49,21 +49,25 @@ class PlacementNode {
     // validate this movement
     this.children = new Array();
     if (move(this.board)) {
-      if (
-        (knownPositions[JSON.stringify(this.board.active)]) &&
-        (knownPositions[JSON.stringify(this.board.active)] <= this.moves.length)
-      ) {
-        this.state = PlacementNodeState.KNOWN;
+      let json = JSON.stringify(this.board.active);
+      if (knownPositions[json]) {
+        if (knownPositions[json].moves.length <= this.moves.length) {
+          this.state = PlacementNodeState.KNOWN;
+        } else {
+          knownPositions[json].state = PlacementNodeState.KNOWN;
+          this.state = PlacementNodeState.VALID;
+        }
       } else {
         this.state = PlacementNodeState.VALID;
-        knownPositions[JSON.stringify(this.board.active)] = this.moves.length;
+        knownPositions[json] = this;
         this.createChildPlacementNodes(move, knownPositions);
       }
     } else {
       this.state = PlacementNodeState.INVALID;
       if (this.board.active.canDecompose()) {
         this.state = PlacementNodeState.PLACED;
-        //console.info('PlacementNode constructor()', this);
+        this.board.active.decompose();
+        console.info('PlacementNode constructor()', this);
       }
     } // if move board
   } // constructor()
@@ -137,26 +141,33 @@ class PlacementNode {
   } // createChildPlacementNodes()
 
   findBest(network) {
-    if (this.state === PlacementNodeState.PLACED) {
-      network.calculateNetwork(this.board);
-      this.best.moves = this.moves;
-      this.best.score = network.values[network.values.length - 1][0];
-    } else {
-      for (let child of this.children) {
-        child.findBest(network);
-        // take the higher score
-        if (child.best.score > this.best.score) {
-          this.best.score = child.best.score;
-          this.best.moves = child.best.moves;
-        // if they're equal, take the faster route
-        } else if (
-          (child.best.score === this.best.score) &&
-          (child.best.moves.length < this.best.moves.length)) {
-            this.best.score = child.best.score;
-            this.best.moves = child.best.moves;
-        }
-      } // for child of this.children
-    } // if state === PLACED
+    switch (this.state) {
+      case PlacementNodeState.PLACED:
+        network.calculateNetwork(this.board);
+        this.best.moves = this.moves;
+        this.best.score = network.values[network.values.length - 1][0];
+        break;
+      case PlacementNodeState.VALID:
+        for (let child of this.children) {
+          let score = child.findBest(network);
+          if (
+            (score === this.best.score) &&
+            (child.best.moves.length < this.best.moves.length)
+          ) {
+            this.best = child.best;
+          } else if (score > this.best.score) {
+            this.best = child.best;
+          }
+        } // for child of this.children
+        break;
+      case PlacementNodeState.INVALID:
+      case PlacementNodeState.KNOWN:
+        // do nothing, not valid and known to be slow
+        break;
+      default:
+        console.warn('PlacementNode State not understood:', this.state);
+    }
+    return this.best.score;
   } // findBest()
 } // class PlacementNode
 
@@ -205,6 +216,7 @@ class Placement {
       this.board.active = null;
       this.board.update();
       if (this.board.gameOver()) {
+        console.log(this.network);
         console.log('HALTING')
       } else {
         requestAnimationFrame(this.network.play.bind(this.network, this.board));

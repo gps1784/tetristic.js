@@ -31,7 +31,9 @@ A list of heuristics not yet added to the system:
 
 ![Smartest attempt so far. Recorded April 15, 2022](/docs/images/smartest/smartest.png)
 
-It cleared some lines! After watching it pile up pieces in futility on a death march, it finally actually cleared some lines. It still leaves tons of gaps, but it actually started to play there for a minute.
+It cleared some lines! After watching it pile up pieces in futility on a death march, it finally actually cleared some lines. It still leaves tons of gaps, but it actually started to play there for a minute. Now the neural network emits its internals on death, so I can record the neural weights and biases. Example below.
+
+![Smartest attempt so far. Recorded April 15, 2022](/docs/images/smartest/smartest_nn.png)
 
 ## To-Do
 - The move planner (board/placement.js) is extremely slow on the first few pieces, presumably because the board is empty. This can take several seconds per route, often up to 5 seconds on my PC.
