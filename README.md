@@ -13,19 +13,25 @@ A heuristic-driven Tetris-playing neural network (that runs in your browser!)
 
 ## Heuristics
 A list of heuristics that are already implemented for playing Tetris:
-1. Maximum Column Height (No citation)
+1. Maximum Column Height (No known citation)
 2. Sum of Columns' Height [(1)](#ci)
+3. Bumpiness [(1)](#citations)
+4. Lines Cleared [(1)](#citations)
 
 A list of heuristics not yet added to the system:
 1. Count of Holes [(1)](#citations)
 2. Count of Columns with Holes [(1)](#citations)
-3. Bumpiness [(1)](#citations)
-4. Sum of Rows' Transitions [(1)](#citations)
-5. Sum of Columns' Transitions [(1)](#citations)
-6. Count of Pits [(1)](#citations)
-7. Deepest Well [(1)](#citations)
-8. Biggest Well (My Heuristic)
-9. Lines Cleared [(1)](#citations)
+3. Sum of Rows' Transitions [(1)](#citations)
+4. Sum of Columns' Transitions [(1)](#citations)
+5. Count of Pits [(1)](#citations)
+6. Deepest Well [(1)](#citations)
+7. Biggest Well (No known citation)
+
+### Smartest Attempt So Far
+
+![Smartest attempt so far. Recorded April 15, 2022](/docs/images/smartest/smartest.png)
+
+It cleared some lines! After watching it pile up pieces in futility on a death march, it finally actually cleared some lines. It still leaves tons of gaps, but it actually started to play there for a minute.
 
 ## To-Do
 - The move planner (board/placement.js) is extremely slow on the first few pieces, presumably because the board is empty. This can take several seconds per route, often up to 5 seconds on my PC.

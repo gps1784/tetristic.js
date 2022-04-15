@@ -1,4 +1,4 @@
-const Tetromino = require('./index2.js');
+const Tetromino = require('./index.js');
 
 const Shapes = {
   I: function shapesI(board) {

@@ -2,7 +2,7 @@
  *
  */
 
-const Placement = require('./board/placement2.js');
+const Placement = require('./board/placement.js');
 const Tetromino = require('./tetromino.js');
 
 class Board {

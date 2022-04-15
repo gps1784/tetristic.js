@@ -3,25 +3,25 @@ const PlacementMovement = {
     return true;
   }, // ROOT
   UP: function placementMovementUp(board) {
-    while (!board.activeTetromino.testForLatch(board)) {
-      board.activeTetromino.translate(board, 0, 1);
+    while (!board.active.canDecompose()) {
+      board.active.translate(0, -1);
     }
-    return true; // this is always legal
+    return false; // this is always decompose
   }, // UP
   DOWN: function placementMovementDown(board) {
-    return board.activeTetromino.translate(board,  0, 1);
+    return board.active.translate( 0, -1);
   }, // DOWN
   LEFT: function placementMovementLeft(board) {
-    return board.activeTetromino.translate(board, -1, 0);
+    return board.active.translate(-1,  0);
   }, // LEFT
   RIGHT: function placementMovementRight(board) {
-    return board.activeTetromino.translate(board,  1, 0);
+    return board.active.translate( 1,  0);
   }, // RIGHT
   CW: function placementMovementCW(board) {
-    return board.activeTetromino.rotateCW(board);
+    return board.active.rotateCW();
   }, // CW
   CCW: function placementMovementCCW(board) {
-    return board.activeTetromino.rotateCCW(board);
+    return board.active.rotateCCW();
   }, // CCW
 } // const PlacementMovement
 
@@ -50,20 +50,20 @@ class PlacementNode {
     this.children = new Array();
     if (move(this.board)) {
       if (
-        (knownPositions[JSON.stringify(this.board.activeTetromino)]) &&
-        (knownPositions[JSON.stringify(this.board.activeTetromino)] <= this.moves.length)
+        (knownPositions[JSON.stringify(this.board.active)]) &&
+        (knownPositions[JSON.stringify(this.board.active)] <= this.moves.length)
       ) {
         this.state = PlacementNodeState.KNOWN;
       } else {
         this.state = PlacementNodeState.VALID;
-        knownPositions[JSON.stringify(this.board.activeTetromino)] = this.moves.length;
+        knownPositions[JSON.stringify(this.board.active)] = this.moves.length;
         this.createChildPlacementNodes(move, knownPositions);
       }
     } else {
       this.state = PlacementNodeState.INVALID;
-      if (this.board.activeTetromino.testForLatch(this.board)) {
+      if (this.board.active.canDecompose()) {
         this.state = PlacementNodeState.PLACED;
-        console.info('PlacementNode constructor()', this);
+        //console.info('PlacementNode constructor()', this);
       }
     } // if move board
   } // constructor()
@@ -186,7 +186,7 @@ class Placement {
    * In case of a tie, we can take the leaf with the shortest path.
    */
   findBest() {
-    console.log(`Finding Best Move for ${this.board.activeTetromino.name}...`);
+    console.log(`Finding Best Move for ${this.board.active.name}...`);
     this.root = new PlacementNode(null, PlacementMovement.ROOT, this.knownPositions, this.board);
     this.root.findBest(this.network);
     console.log('Best Move:', this.root.best);
@@ -201,10 +201,14 @@ class Placement {
     if (moves.length > 0) {
       requestAnimationFrame(this.animate.bind(this, moves));
     } else {
-      this.board.activeTetromino.decompose(this.board);
-      this.board.activeTetromino = null;
+      this.board.active.decompose(this.board);
+      this.board.active = null;
       this.board.update();
-      requestAnimationFrame(this.network.play.bind(this.network, this.board));
+      if (this.board.gameOver()) {
+        console.log('HALTING')
+      } else {
+        requestAnimationFrame(this.network.play.bind(this.network, this.board));
+      }
     }
   } // animate()
 

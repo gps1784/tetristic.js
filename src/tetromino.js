@@ -2,7 +2,7 @@
  *
  */
 
-const Tetromino  = require('./tetromino/index2.js');
+const Tetromino  = require('./tetromino/index.js');
 Tetromino.shapes = require('./tetromino/shapes.js');
 
 module.exports = Tetromino;

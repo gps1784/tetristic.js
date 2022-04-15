@@ -91,7 +91,7 @@ class Network {
 
   calculateNetwork(board) {
     for (let _input = 0; _input < Heuristic.list.length; _input++) {
-      this.values[0][_input] = Heuristic.list[_input](board);
+      this.values[0][_input] = Heuristic.list[_input](board.clone());
     } // for _input
     for (let _layer = 0; _layer < this.depth; _layer++) {
       for (let _node = 0; _node < this.widths[_layer]; _node++) {
