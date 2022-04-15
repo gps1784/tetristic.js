@@ -1,15 +1,15 @@
 const Heuristic = require('../heuristic/index.js');
-const Board = require('../board/index.js');
+const Board = require('../board.js');
 
 class Network {
   constructor(canvasObj=null, depth=null, widths=null, weights=null, biases=null) {
-    this.context = canvasObj.getContext('2d');
+    this.screen = canvasObj.getContext('2d');
     this.generate(depth, widths, weights, biases);
     this.render();
   } // constructor()
 
   clone() {
-    new Network(this.context.canvas, this.depth, this.widths, this.weights, this.biases);
+    new Network(this.screen.canvas, this.depth, this.widths, this.weights, this.biases);
   } // clone()
 
   generate(depth, widths, weights, biases) {
@@ -80,12 +80,12 @@ class Network {
     this.widthScale = Math.floor(
       // canvas width divided by the largest of either
       // the widest point in the neural network or the starting inputs
-      this.context.canvas.width / Math.max(...this.widths, Heuristic.list.length)
+      this.screen.canvas.width / Math.max(...this.widths, Heuristic.list.length)
     );
     // how tall are the graphics for the neural network allowed to be?
     this.heightScale = Math.floor(
       // the input and output layers will always be visible, plus any hidden layers
-      this.context.canvas.height / (this.depth + 1)
+      this.screen.canvas.height / (this.depth + 1)
     );
   } // generate()
 
@@ -133,17 +133,17 @@ class Network {
     let x     = (node * scale) + offset;
     let y     = (layer * scale) + offset;
     // setup the canvas as we like it
-    this.context.font         = '14px monospace';
-    this.context.lineWidth    = 2;
-    this.context.textAlign    = 'right';
-    this.context.textBaseline = 'top';
-    this.context.fillStyle    = 'rgb(255, 255, 255)';
-    this.context.strokeStyle  = 'rgb(0, 0, 0)';
+    this.screen.font         = '14px monospace';
+    this.screen.lineWidth    = 2;
+    this.screen.textAlign    = 'right';
+    this.screen.textBaseline = 'top';
+    this.screen.fillStyle    = 'rgb(255, 255, 255)';
+    this.screen.strokeStyle  = 'rgb(0, 0, 0)';
     // draw the rectangle, then the text on top
-    this.context.fillRect(x, y, offset*2, offset*2);
-    this.context.strokeRect(x, y, offset*2, offset*2);
-    this.context.fillStyle = this.calcColorRedBlackGreen(this.values[layer][node]);
-    this.context.fillText(this.values[layer][node].toFixed(3), x + offset*2, y);
+    this.screen.fillRect(x, y, offset*2, offset*2);
+    this.screen.strokeRect(x, y, offset*2, offset*2);
+    this.screen.fillStyle = this.calcColorRedBlackGreen(this.values[layer][node]);
+    this.screen.fillText(this.values[layer][node].toFixed(3), x + offset*2, y);
   } // renderNode()
 
   renderLinks() {
@@ -154,12 +154,12 @@ class Network {
         let _start = {x: _node * scale, y: (_layer + 1) * scale};
         for (let _link = 0; _link < this.weights[_layer][_node].length; _link++) {
           let _end = {x: _link * scale, y: _layer * scale};
-          this.context.lineWidth   = 5;
-          this.context.strokeStyle = this.calcColorRedBlackGreen(this.weights[_layer][_node][_link]);
-          this.context.beginPath();
-          this.context.moveTo(_start.x + offset, _start.y + offset);
-          this.context.lineTo(_end.x + offset, _end.y + offset);
-          this.context.stroke();
+          this.screen.lineWidth   = 5;
+          this.screen.strokeStyle = this.calcColorRedBlackGreen(this.weights[_layer][_node][_link]);
+          this.screen.beginPath();
+          this.screen.moveTo(_start.x + offset, _start.y + offset);
+          this.screen.lineTo(_end.x + offset, _end.y + offset);
+          this.screen.stroke();
         } // for _link
       } // for _node
     } // for _layer

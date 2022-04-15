@@ -16,16 +16,17 @@ const Heuristic = {
     // this will keep track of the highest populated row,
     // where 0 is the ceiling and 20 is empty
     let retval = 0;
-    for (var _row = board.rowCount - 1; _row >= 0; _row--) {
-      for (let _cell of board.cells[_row]) {
-        if (_cell !== null) {
-          retval = board.rowCount - _row;
-        } // if _cell !== null
-      } // for _cell
-    } // for _row
-    // reverse this, then normalize
-    // (e.g. row 0 => height 20 => 100% => 1.0)
-    retval = retval / board.rowCount;
+    for (let row = 0; row < board.height; row++) {
+      for (let col = 0; col < board.width; col++) {
+        if (board.getCell(col, row) !== null) {
+          retval = row;
+          break; // skip the rest of this row
+        } // if board.getCell
+      } // for col
+    } // for row
+    // normalize this value 0 <=> 1
+    // (e.g. height 0 => 0% => 0.0, height 20 => 100% => 1.0)
+    retval = retval / board.height;
     return retval;
   }, // maxHeight()
 
@@ -33,19 +34,19 @@ const Heuristic = {
     // start at the bottom, counting upward
     // this will keep track of the highest populated row,
     // where 0 is the ceiling and 20 is empty
-    let retval = board.rowCount;
-    let cols   = new Array(board.colCount);
+    let retval = 0;
+    let cols   = new Array(board.width);
     cols.fill(0);
-    for (let _row = board.rowCount - 1; _row >= 0; _row--) {
-      for (let _col = 0; _col < board.colCount; _col++) {
-        if (board.cells[_row][_col] !== null) {
-          cols[_col] = board.rowCount - _row;
-        }
-      } // for _col
-    } // for _row
+    for (let col = 0; col < board.width; col++) {
+      for (let row = 0; row < board.height; row++) {
+        if (board.getCell(col, row) !== null) {
+          cols[col] = row;
+        } // if board.getCell
+      } // for row
+    } // for col
     //
     retval = cols.reduce(function(sum, curr) { return sum + curr }, 0);
-    retval = retval / (board.rowCount * board.colCount);
+    retval = retval / (board.height * board.width);
     return retval;
 
   }, // sumOfHeight()

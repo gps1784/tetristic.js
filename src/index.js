@@ -1,6 +1,6 @@
 var Tetristic = {};
 
-Tetristic.Board = require('./board/index.js');
+Tetristic.Board = require('./board.js');
 Tetristic.Network = require('./network/index.js');
 
 window.onload = function() {
