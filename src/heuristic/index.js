@@ -56,7 +56,7 @@ const Heuristic = {
   }, // sumOfHeight()
 
   bumpiness: function heuristicBumpiness(board) {
-    //board.active.decompose();
+    board.active.decompose();
     let retval = 0;
     for (let col = 0; col < board.width - 1; col++) {
       let current = Heuristic.getHeightOfCol(board, col);

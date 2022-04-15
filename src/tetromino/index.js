@@ -15,6 +15,7 @@ class Tetromino {
     this.cellArray = cellArray; //Array.from(cellArray, function(cell) { Object.assign({}, cell) });
     this.color     = color;
     this.origin    = Object.assign({}, origin);
+    this.orient    = 0;
   } // Tetromino.constructor()
 
   clone(
@@ -23,13 +24,15 @@ class Tetromino {
   ) {
     board  = board  || this.board;
     origin = origin || this.origin;
-    return new Tetromino(board, this.name, this.cellArray, this.color, origin);
+    let newTetromino = new Tetromino(board, this.name, this.cellArray, this.color, origin);
+    newTetromino.orient = this.orient;
+    return newTetromino;
   } // Tetromino#clone()
 
   toJSON(key) {
     // NOTE: I may regret this later
     // this is a hacky way of getting past the self-reference from this.board.active...
-    return JSON.stringify(this.cells());
+    return JSON.stringify({ origin: this.origin, orient: this.orient });
   } // Tetromino#toJSON()
 
   cells(
@@ -97,6 +100,7 @@ class Tetromino {
       } // if this.isValidCell()
     } // for cell of this.cellArray
     this.cellArray = rotatedCells;
+    this.orient = (this.orient + 1) % 4;
     return this; // chainable
   } // Tetromino#rotateCW()
 
@@ -117,6 +121,7 @@ class Tetromino {
       } // if this.isValidCell()
     } // for cell of this.cellArray
     this.cellArray = rotatedCells;
+    this.orient = (this.orient + 3) % 4;
     return this; // chainable
   } // Tetromino#rotateCCW()
 

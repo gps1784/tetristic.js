@@ -1,5 +1,6 @@
 const Heuristic = require('../heuristic/index.js');
 const Board = require('../board.js');
+const Placement = require('../placement.js');
 
 class Network {
   constructor(canvasObj=null, depth=null, widths=null, weights=null, biases=null) {
@@ -186,8 +187,7 @@ class Network {
 
   play(board) {
     board.update();
-    let placement = new Board.Placement(board, this);
-    placement.findBest();
+    new Placement(board, this).explore().animate();
     this.calculateNetwork(board);
     this.render();
   } // play()

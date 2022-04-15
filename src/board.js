@@ -36,7 +36,7 @@ class Board {
     this.active = Tetromino.shapes.random(this);
     this.next   = Tetromino.shapes.random(this, this.active);
     // render the board
-    this.render();
+    //this.render();
   } // Board.constructor()
 
   clone() {
